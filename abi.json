@@ -1,0 +1,693 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_feeRecipient",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "inputs": [],
+        "name": "ReentrancyGuardReentrantCall",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "caller",
+                "type": "address"
+            }
+        ],
+        "name": "NotBeneficiary",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidFeeRecipient",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "OnlyProtocolRecipient",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidRecipientAddress",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "NoBeneficiariesProvided",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "TooManyBeneficiaries",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "MismatchedInputs",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "required",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "provided",
+                "type": "uint256"
+            }
+        ],
+        "name": "InsufficientFee",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidSender",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "OwnerCannotBeBeneficiary",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidBeneficiaryAddress",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "beneficiary",
+                "type": "address"
+            }
+        ],
+        "name": "DuplicateBeneficiary",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidShare",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "TotalSharesMismatch",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "FeeTransferFailed",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "RefundFailed",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "OwnerMismatch",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "LegacyNotActive",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "ExecutionTimeNotReached",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "NoAssetsDue",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InsufficientBalanceOrAllowance",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidArrayLength",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "ClaimFailed",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "TokenAddressMustBeContract",
+        "type": "error"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "newExecutionTimestamp",
+                "type": "uint256"
+            }
+        ],
+        "name": "DeadlineReset",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "payer",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "FeeCollected",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "oldRecipient",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newRecipient",
+                "type": "address"
+            }
+        ],
+        "name": "FeeRecipientUpdated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "beneficiary",
+                "type": "address"
+            }
+        ],
+        "name": "HeirloomActived",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "beneficiary",
+                "type": "address"
+            }
+        ],
+        "name": "LegacyCancelled",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "beneficiary",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "LegacyClaimed",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "beneficiary",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "executionTimestamp",
+                "type": "uint256"
+            }
+        ],
+        "name": "LegacySetup",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "MAX_BATCH_TOKENS",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "MAX_BENEFICIARIES",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "MAX_SHARE",
+        "outputs": [
+            {
+                "internalType": "uint16",
+                "name": "",
+                "type": "uint16"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "beneficiaryClaims",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_owner",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_beneficiary",
+                "type": "address"
+            },
+            {
+                "internalType": "address[]",
+                "name": "_tokens",
+                "type": "address[]"
+            }
+        ],
+        "name": "claimLegacies",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "deadlineExtensionFee",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_owner",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_offset",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_limit",
+                "type": "uint256"
+            }
+        ],
+        "name": "getHeirloomsByOwner",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "owner",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "beneficiary",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "beneficiaryIndex",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "ownerIndex",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint16",
+                        "name": "share",
+                        "type": "uint16"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "isActive",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct EtherHeirloom.LegacyAccount[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_beneficiary",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_offset",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_limit",
+                "type": "uint256"
+            }
+        ],
+        "name": "getHeirloomsForBeneficiary",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "owner",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "beneficiary",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "beneficiaryIndex",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "ownerIndex",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint16",
+                        "name": "share",
+                        "type": "uint16"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "isActive",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct EtherHeirloom.LegacyAccount[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "operationFee",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "ownerExecutionTimestamp",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "ownerTokenReleased",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "protocolFeeRecipient",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_newDelaySeconds",
+                "type": "uint256"
+            }
+        ],
+        "name": "resetDeadline",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "setupFee",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address[]",
+                "name": "_beneficiaries",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint16[]",
+                "name": "_shares",
+                "type": "uint16[]"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_delaySeconds",
+                "type": "uint256"
+            }
+        ],
+        "name": "setupLegacies",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "totalAllocatedShares",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_newRecipient",
+                "type": "address"
+            }
+        ],
+        "name": "updateFeeRecipient",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
